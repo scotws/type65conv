@@ -1,0 +1,19 @@
+; Test code for typ65conv
+; Scot W. Stevenson <scot.stevenson@gmail.com>
+; First version: 16. Sep 2016
+; This version: 16. Sep 2016
+
+        .origin 00:8000
+        .mpu 65816
+
+start           
+                ldx.# 00
+                txa
+loop            sta.x 1000  ; label on line with opcode
+                dex
+                bne loop
+
+                stp
+data  ; with comment after label
+        .byte 00, 01, 02, 03, "that's all"
+        .end
