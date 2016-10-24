@@ -1,13 +1,15 @@
 {
-        "bne": "bne",
-        "brk": "brk",
-        "dex": "dex",
-        "lda.#": "lda #????",
-        "lda.d": "lda ??",
-        "ldx.#": "ldx #????",
-        "sta.d": "sta ??",
-        "sta.x": "sta #????,x",
-        "stp": "stp",
-        "tax": "tax",
-        "txa": "txa"
+        "table": {
+                "bne": "bne",
+                "brk": "brk",
+                "dex": "dex",
+                "lda.#": "lda #????",
+                "lda.d": "lda ??",
+                "ldx.#": "ldx #????",
+                "sta.d": "sta ??",
+                "sta.x": "sta #????,x",
+                "stp": "stp",
+                "tax": "tax",
+                "txa": "txa"
+        }
 }

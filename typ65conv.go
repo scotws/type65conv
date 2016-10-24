@@ -20,6 +20,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -34,6 +35,15 @@ import (
 type workline struct {
 	linenumber int
 	payload    string
+}
+
+const (
+	OPCODELIST = "opcodes.json"
+)
+
+// Opcodes currently are simple strings
+var opcodes struct {
+	Table map[string]string `json:"table"`
 }
 
 // We limit the number of concurrent processes to the number of logical cores
@@ -52,12 +62,13 @@ var (
 
 // Defintions for sorting, see https://golang.org/pkg/sort/
 // We sort by line numbers
-
 type byLine []workline
 
 func (a byLine) Len() int           { return len(a) }
 func (a byLine) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byLine) Less(i, j int) bool { return a[i].linenumber < a[j].linenumber }
+
+// Load opcode conversion table from JSON
 
 // firstToUpper takes a string and converts the first word to uppercase,
 // returning the rest of the string otherwise unchanged. Splits at the first
@@ -245,12 +256,14 @@ func main() {
 
 	flag.Parse()
 
+	// IMPORT RAW SOURCE TEXT
 	// It's a fatal error not to have a filename
 	if *input == "" {
 		log.Fatal("No input filename provided.")
 	}
 
 	inputFile, err := os.Open(*input)
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -261,6 +274,20 @@ func main() {
 	for source.Scan() {
 		raw = append(raw, source.Text())
 	}
+
+	// IMPORT OPCODES
+	opcodeFile, err := os.Open(OPCODELIST)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	jParser := json.NewDecoder(opcodeFile)
+	if err = jParser.Decode(&opcodes); err != nil {
+		log.Fatal(err)
+	}
+
+	// TODO keep this line for testing until we know opcodes work fine
+	fmt.Println(opcodes.Table)
 
 	// ---- PROCESS LINES ----
 
