@@ -41,9 +41,14 @@ const (
 	OPCODELIST = "opcodes.json"
 )
 
-// Opcodes currently are simple strings
-var opcodes struct {
-	Table map[string]string `json:"table"`
+// Opcode conversion data is stored in a JSON file
+type OpcData struct {
+	OldMnem string `json: "oldmnem"`
+	Size    int    `json: "size"`
+}
+
+var Opcodes struct {
+	Table map[string]OpcData `json: "table"`
 }
 
 // We limit the number of concurrent processes to the number of logical cores
@@ -67,9 +72,6 @@ type byLine []workline
 func (a byLine) Len() int           { return len(a) }
 func (a byLine) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byLine) Less(i, j int) bool { return a[i].linenumber < a[j].linenumber }
-
-// Load opcode conversion table from JSON
-// HIER HIER
 
 // firstToUpper takes a string and converts the first word to uppercase,
 // returning the rest of the string otherwise unchanged. Splits at the first
@@ -277,18 +279,19 @@ func main() {
 	}
 
 	// IMPORT OPCODES
-	opcodeFile, err := os.Open(OPCODELIST)
+
+	jfile, err := os.Open(OPCODELIST)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	jParser := json.NewDecoder(opcodeFile)
-	if err = jParser.Decode(&opcodes); err != nil {
+	jParser := json.NewDecoder(jfile)
+	if err = jParser.Decode(&Opcodes); err != err {
 		log.Fatal(err)
 	}
 
-	// TODO keep this line for testing until we know opcodes work fine
-	fmt.Println(opcodes.Table)
+	// TODO Testing only, remove when done
+	fmt.Println(Opcodes)
 
 	// ---- PROCESS LINES ----
 

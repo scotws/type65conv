@@ -1,85 +1,85 @@
 {
         "table": {
                 "adc.#": {
-                        "mnem": "adc #?",
+                        "oldmnem": "adc #?",
                         "size": 3},
                 "adc": {
-                        "mnem": "adc ?",
+                        "oldmnem": "adc ?",
                         "size": 3},
                 "adc.l": {
-                        "mnem": "adc ?",
+                        "oldmnem": "adc ?",
                         "size": 4},
                 "adc.d": {
-                        "mnem": "adc ?",
+                        "oldmnem": "adc ?",
                         "size": 2},
                 "adc.di": {
-                        "mnem": "adc (?)",
+                        "oldmnem": "adc (?)",
                         "size": 2},
                 "adc.dil": {
-                        "mnem": "adc [?]",
+                        "oldmnem": "adc [?]",
                         "size": 2},
                 "adc.x": {
-                        "mnem": "adc ?,x",
+                        "oldmnem": "adc ?,x",
                         "size": 3},
                 "adc.lx": {
-                        "mnem": "adc ?,x",
+                        "oldmnem": "adc ?,x",
                         "size": 4},
                 "adc.y": {
-                        "mnem": "adc ?,y",
+                        "oldmnem": "adc ?,y",
                         "size": 3},
                 "adc.dx": {
-                        "mnem": "adc ?,x",
+                        "oldmnem": "adc ?,x",
                         "size": 2},
                 "adc.dxi": {
-                        "mnem": "adc (?,x)",
+                        "oldmnem": "adc (?,x)",
                         "size": 2},
                 "adc.diy": {
-                        "mnem": "adc (?),y",
+                        "oldmnem": "adc (?),y",
                         "size": 2},
                 "adc.dily": {
-                        "mnem": "adc [?],y",
+                        "oldmnem": "adc [?],y",
                         "size": 2},
                 "adc.s": {
-                        "mnem": "adc ?,S",
+                        "oldmnem": "adc ?,S",
                         "size": 2},
                 "adc.siy": {
-                        "mnem": "adc (?,S),y",
+                        "oldmnem": "adc (?,S),y",
                         "size": 2},
                 "bne": {
-                        "mnem": "bne ?",
+                        "oldmnem": "bne ?",
                         "size": 2},
                 "brk": {
-                        "mnem": "brk ?",
+                        "oldmnem": "brk ?",
                         "size": 2},
                 "cop": {
-                        "mnem": "cop ?",
+                        "oldmnem": "cop ?",
                         "size": 2},
                 "dex": {
-                        "mnem": "dex",
+                        "oldmnem": "dex",
                         "size": 1},
                 "lda.#": {
-                        "mnem": "lda #?",
+                        "oldmnem": "lda #?",
                         "size": 3},
                 "lda.d": {
-                        "mnem": "lda ?",
+                        "oldmnem": "lda ?",
                         "size": 2},
                 "ldx.#": {
-                        "mnem": "ldx #?",
+                        "oldmnem": "ldx #?",
                         "size": 3},
                 "sta.d": {
-                        "mnem": "sta ?",
+                        "oldmnem": "sta ?",
                         "size": 2},
                 "sta.x": {
-                        "mnem": "sta #?,x",
+                        "oldmnem": "sta #?,x",
                         "size": 3},
                 "stp": {
-                        "mnem": "stp",
+                        "oldmnem": "stp",
                         "size": 1},
                 "tax": {
-                        "mnem": "tax",
+                        "oldmnem": "tax",
                         "size": 1},
                 "txa": {
-                        "mnem": "txa",
+                        "oldmnem": "txa",
                         "size": 1}
         }
 }
