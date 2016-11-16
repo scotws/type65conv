@@ -15,10 +15,8 @@ TAN, this tool converts it.
 
 **-i**  - Input file name (REQUIRED)
 **-o**  - Output file name (default "typ65conv.asm")
-
 **-lc** - Add colons to all labels (default don't). `label` -> `label:`
 **-ou** - Make opcodes uppercase (default lowercase). `nop` -> `NOP`
-**-du** - Make directives uppercase (default lowercase). `.end` -> `.END` 
 
 
 ## Conversion

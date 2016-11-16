@@ -9,6 +9,7 @@
 start           
                 ldx.# 00
                 txa
+                adc.l 10:0000
 loop            sta.x 1000  ; label on line with opcode
                 dex
                 bne loop

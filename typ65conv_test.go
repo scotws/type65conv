@@ -1,7 +1,7 @@
 // Test file for typ65conv.go
 // Scot W. Stevenson <scot.stevenson@gmail.com>
 // First version 16. September 2016
-// This version 20. September 2016
+// This version 16. Nov 2016
 
 package main
 
@@ -85,6 +85,25 @@ func TestIsDirective(t *testing.T) {
 	for _, test := range tests {
 		if got := isDirective(test.input); got != test.want {
 			t.Errorf("isDirective(%q) = %v", test.input, got)
+		}
+	}
+}
+
+func TestIsOpcode(t *testing.T) {
+	var tests = []struct {
+		input string
+		want  bool
+	}{
+		{"", false},
+		{"superfrog", false},
+		{"tax", true},
+		{"adc.l", true},
+		{".data", false},
+	}
+
+	for _, test := range tests {
+		if got := isOpcode(test.input); got != test.want {
+			t.Errorf("isOpcode(%q) = %v", test.input, got)
 		}
 	}
 }

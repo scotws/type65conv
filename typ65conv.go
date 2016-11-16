@@ -59,10 +59,11 @@ var (
 	processed  []workline
 
 	upperOpcs  = flag.Bool("ou", false, "Convert opcodes to upper case")
-	upperDirs  = flag.Bool("du", false, "Convert directives to upper case")
 	labelColon = flag.Bool("lc", false, "Add colon to labels")
 	input      = flag.String("i", "", "Input file (REQUIRED)")
 	output     = flag.String("o", "typ65conv.asm", "Output file (default 'typ65conv.asm')")
+
+	opcodeindent = strings.Repeat(" ", 16)
 )
 
 // Defintions for sorting, see https://golang.org/pkg/sort/
@@ -115,11 +116,11 @@ func isEmpty(s string) bool {
 }
 
 // isOpcode takes a string. If the first word of the string is in the list of
-// Typist Assembler Notation opcodes, it returns the bool true, else false
-// TODO write test routine
+// Typist Assembler Notation opcodes, it returns the bool true, else false.
+// Assumes that the string has had all whitespace trimmed
 func isOpcode(s string) bool {
-	// TODO write code
-	return true
+	_, ok := Opcodes.Table[s]
+	return ok
 }
 
 // mergeLabel takes to strings, the first a complete line with the original
@@ -197,55 +198,58 @@ func procLine(jobs <-chan workline, results chan<- workline) {
 			// process first, then we can come back and reassemble
 			// stuff. We use the fact that label is not empty as a
 			// flag
-			j.payload = labelline[1]
+			j.payload = strings.Replace(j.payload, label, "", -1)
 
 		}
 
 		// Main switch statement returns a processed new payload
-		newpayload := ""
+		newpl := ""
+		cleanpl := strings.TrimSpace(j.payload)
+		splitpl := strings.Fields(cleanpl)
+		testpl := splitpl[0]
 
 		switch {
 
-		case isDirective(j.payload):
+		// At the moment, we do not translate directives but just pass them on
+		case isDirective(testpl):
+			newpl = j.payload
 
-			// See if we need to convert the first word, that is,
-			// the directive itself, to uppercase
+		case isComment(testpl):
+			newpl = j.payload
 
-			// TODO take care of numbers
-
-			if *upperDirs {
-				newpayload = firstToUpper(j.payload)
-			} else {
-				newpayload = j.payload
-			}
-
-		case isComment(j.payload):
-
-			newpayload = j.payload
-
-		case isOpcode(j.payload):
+		case isOpcode(testpl):
+			oldmnem := Opcodes.Table[testpl].OldMnem
+			// size := Opcodes.Table[testpl].Size
 
 			if *upperOpcs {
-				newpayload = firstToUpper(j.payload)
-			} else {
-				newpayload = j.payload
-
+				oldmnem = firstToUpper(oldmnem)
 			}
 
-			// TODO convert instruction
-			// TODO handle in-line comments
-			newpayload = j.payload
+			// Convert and insert operand
+			if strings.Contains(oldmnem, "?") {
+				// TODO convert numbers
+				oldmnem = strings.Replace(oldmnem, "?", splitpl[1], -1)
+			}
+
+			// Reassemble with whitespace and in-line comments
+			// TODO add rest of split line, including inline
+			// comments
+			newpl = opcodeindent + oldmnem
 
 		// Everything else is considered an error
 		default:
 			fmt.Println("FATAL: Unrecognized payload in line", j.linenumber)
-			newpayload = "ERROR -->" + j.payload
+			newpl = "ERROR -->" + j.payload
 		}
 
 		// Add any label back to line
+		// TODO add fancy formatting
 		if label != "" {
-			newpayload = label + " " + newpayload
+			labelindent := strings.Repeat(" ", len(opcodeindent)-len(label))
+			newpl = label + labelindent + strings.TrimSpace(newpl)
 		}
+
+		j.payload = newpl
 
 		results <- j
 	}
@@ -289,9 +293,6 @@ func main() {
 	if err = jParser.Decode(&Opcodes); err != err {
 		log.Fatal(err)
 	}
-
-	// TODO Testing only, remove when done
-	fmt.Println(Opcodes)
 
 	// ---- PROCESS LINES ----
 
