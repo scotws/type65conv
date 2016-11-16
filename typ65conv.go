@@ -1,7 +1,7 @@
 // typ65conv - Convert Typist's Assembler Code to Traditional Formats
 // Scot W. Stevenson <scot.stevenson@gmail.com>
 // First version: 16. September 2016
-// This version: 24. October 2016
+// This version: 16. November 2016
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ func (a byLine) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byLine) Less(i, j int) bool { return a[i].linenumber < a[j].linenumber }
 
 // Load opcode conversion table from JSON
+// HIER HIER
 
 // firstToUpper takes a string and converts the first word to uppercase,
 // returning the rest of the string otherwise unchanged. Splits at the first
