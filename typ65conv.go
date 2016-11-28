@@ -1,7 +1,7 @@
 // typ65conv - Convert Typist's Assembler Code to Traditional Formats
 // Scot W. Stevenson <scot.stevenson@gmail.com>
-// First version: 16. September 2016
-// This version: 16. November 2016
+// First version: 16. Sep 2016
+// This version: 28. Nov 2016
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import (
 	"os"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -74,6 +75,43 @@ func (a byLine) Len() int           { return len(a) }
 func (a byLine) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byLine) Less(i, j int) bool { return a[i].linenumber < a[j].linenumber }
 
+// convertNumber takes a string that is the opcode of an typist assembler
+// instruction and returns a string converted for its traditional counterpart.
+func convertNumber(s string) string {
+	s = strings.TrimSpace(s)
+
+	// Remove delimiters
+	s = strings.Replace(s, ":", "", -1)
+	s = strings.Replace(s, ".", "", -1)
+
+	if strings.HasPrefix(s, "%") {
+		return s
+	}
+
+	if strings.HasPrefix(s, "&") {
+		return strings.TrimPrefix(s, "&")
+	}
+
+	if strings.HasPrefix(s, "$") {
+		return s
+	}
+
+	// Use TrimPrefix instead of TrimLeft or "0x00" will fail
+	if strings.HasPrefix(s, "0x") {
+		return "$" + strings.TrimPrefix(s, "0x")
+	}
+
+	// Check if string is a valid hex number. We have to use 32 as size of
+	// numbers in bits because Go doesn't support 24 bits. Note this means
+	// that DEAD etc will be considered a number, not a symbol
+	if _, err := strconv.ParseInt(s, 16, 32); err == nil {
+		return "$" + s
+	}
+
+	// Assume symbol or label
+	return s
+}
+
 // firstToUpper takes a string and converts the first word to uppercase,
 // returning the rest of the string otherwise unchanged. Splits at the first
 // space character. Used to convert both directives and opcodes to upper case.
@@ -117,7 +155,6 @@ func isEmpty(s string) bool {
 
 // isOpcode takes a string. If the first word of the string is in the list of
 // Typist Assembler Notation opcodes, it returns the bool true, else false.
-// Assumes that the string has had all whitespace trimmed
 func isOpcode(s string) bool {
 	_, ok := Opcodes.Table[s]
 	return ok

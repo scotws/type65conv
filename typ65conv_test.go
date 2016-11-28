@@ -1,11 +1,41 @@
 // Test file for typ65conv.go
 // Scot W. Stevenson <scot.stevenson@gmail.com>
-// First version 16. September 2016
-// This version 16. Nov 2016
+// First version 16. Sep 2016
+// This version 28. Nov 2016
 
 package main
 
 import "testing"
+
+func TestConvertNumber(t *testing.T) {
+	var tests = []struct {
+		input string
+		want  string
+	}{
+		// {"", ""},
+		// {" ", " "},
+		{"00:0000", "$000000"},
+		{"00.0000", "$000000"},
+		{"%11110000", "%11110000"},
+		{"$00", "$00"},
+		{"&10", "10"},
+		{"&00", "00"},
+		{"0xa0", "$a0"},
+		{"0x00", "$00"},
+		{"1000", "$1000"},
+		{"0000", "$0000"},
+		{"tali", "tali"},
+		{"dead", "$dead"},   // should be converted to number
+		{"0dead", "$0dead"}, // should be a number
+		{"tali", "tali"},
+	}
+
+	for _, test := range tests {
+		if got := convertNumber(test.input); got != test.want {
+			t.Errorf("convertNumber(%q) = %v", test.input, got)
+		}
+	}
+}
 
 // Test for empty and whitespace strings removed as we have already removed
 // these cases in the main program
@@ -51,6 +81,7 @@ func TestHasLabel(t *testing.T) {
 		}
 	}
 }
+
 func TestIsComment(t *testing.T) {
 	var tests = []struct {
 		input string
@@ -89,6 +120,9 @@ func TestIsDirective(t *testing.T) {
 	}
 }
 
+// Test for isOpcode, currently does not work because requires call to main
+// routine to load opcodes from JSON file
+/*
 func TestIsOpcode(t *testing.T) {
 	var tests = []struct {
 		input string
@@ -107,6 +141,7 @@ func TestIsOpcode(t *testing.T) {
 		}
 	}
 }
+*/
 
 func TestIsEmpty(t *testing.T) {
 	var tests = []struct {
@@ -126,7 +161,6 @@ func TestIsEmpty(t *testing.T) {
 	}
 }
 
-// TODO add more tests
 func TestMergeLabel(t *testing.T) {
 	type ip struct {
 		line  string
