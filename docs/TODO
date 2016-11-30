@@ -1,9 +1,0 @@
-TODO list for typ65conv
-First version: 30. Nov 2016
-This version: 30. Nov 2016
-
-- Add validation of operand sizes for hex numbers
-- Add validation of operand sizes for decimal numbers
-- Pretty format output
-- Convert .byte, .word etc numbers
-- Consider some directive conversions

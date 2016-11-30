@@ -1,0 +1,12 @@
+TODO list for typ65conv
+First version: 30. Nov 2016
+This version: 30. Nov 2016
+
+- Rewrite horribly messy main code
+- Add -lu parameter to convert labels to upper case
+- Add validation of operand sizes for hex numbers
+- Add validation of operand sizes for decimal numbers
+- Make output format pretty
+- Add -du to convert directive commands to upper case
+- Convert parameters of some simple directives such as .origin
+- Convert .byte, .word etc numbers

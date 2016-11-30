@@ -39,7 +39,8 @@ type workline struct {
 }
 
 const (
-	OPCODELIST = "opcodes.json"
+	OPCODELIST    = "opcodes.json"
+	DEFAULTOUTPUT = "typ65conv.asm"
 )
 
 // Opcode conversion data is stored in a JSON file
@@ -60,9 +61,9 @@ var (
 	processed  []workline
 
 	upperOpcs  = flag.Bool("ou", false, "Convert opcodes to upper case")
-	labelColon = flag.Bool("lc", false, "Add colon to labels")
+	labelColon = flag.Bool("lc", false, "Add colons to labels")
 	input      = flag.String("i", "", "Input file (REQUIRED)")
-	output     = flag.String("o", "typ65conv.asm", "Output file (default 'typ65conv.asm')")
+	output     = flag.String("o", DEFAULTOUTPUT, "Output file")
 
 	opcodeindent = strings.Repeat(" ", 16)
 )
@@ -368,9 +369,20 @@ func main() {
 
 	sort.Sort(byLine(processed))
 
-	// TESTING TODO
-	for _, l := range processed {
-		fmt.Println(l.payload)
+	// ---- SAVE RESULT TO FILE ----
+
+	f, err := os.Create(*output)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	defer f.Close()
+
+	fmt.Println("Writing result to", *output)
+	for _, l := range processed {
+		f.WriteString(l.payload + "\n")
+	}
+
+	f.Sync()
 
 }
