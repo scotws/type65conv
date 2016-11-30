@@ -11,26 +11,26 @@
 
 start           
                 ldx.# 00
-                ldy.# %00001111
-                txa         ; label on line with opcode, no operand
+                ldy.# %00001111 ; binary
+                txa         ; opcode with comment
                 adc.l 10:0000
-loop            sta.x 1000  ; label on line with opcode and operand
+loop            sta.x 1000  ; label with opcode, operand, comment
                 dex
                 bne loop
 
         ; these are a bunch of special cases
         
-                brk &01         ; decimal numbers
-                cop &02         ; decimal numbers
-                wdm &03         ; decimal numbers
+                brk &01         ; decimal number
+                cop &02         ; decimal number
+                wdm &03         ; decimal number
 
                 phe.# 1000      ; PEA   ; double semicolon
                 phe.d 0a        ; PEI   ; ; triple semicolon
                 phe.r 1000      ; PER
 
-                rts.l           ; RTL
-                jmp.l loop      ; JML
-                bra.l loop      ; BRL
+                rts.l           ; rts.l -> RTL
+                jmp.l loop      ; jmp.l -> JML
+                bra.l loop      ; bra.l -> BRL
 
                 stp
 
