@@ -3,19 +3,37 @@
 ; First version: 16. Sep 2016
 ; This version: 28. Nov 2016
 
+; NOTE THIS CODE WILL NOT RUN
+
         ; this is an indented comment that should remain
         .origin 00:8000
         .mpu 65816
 
 start           
                 ldx.# 00
+                ldy.# %00001111
                 txa         ; label on line with opcode, no operand
                 adc.l 10:0000
 loop            sta.x 1000  ; label on line with opcode and operand
                 dex
                 bne loop
 
+        ; these are a bunch of special cases
+        
+                brk &01         ; decimal numbers
+                cop &02         ; decimal numbers
+                wdm &03         ; decimal numbers
+
+                phe.# 1000      ; PEA   ; double semicolon
+                phe.d 0a        ; PEI   ; ; triple semicolon
+                phe.r 1000      ; PER
+
+                rts.l           ; RTL
+                jmp.l loop      ; JML
+                bra.l loop      ; BRL
+
                 stp
+
 data  ; with comment after label
         .byte 00, 01, 02, 03, "that's all"
         .end
