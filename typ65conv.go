@@ -1,7 +1,7 @@
 // typ65conv - Convert Typist's Assembler Code to Traditional Formats
 // Scot W. Stevenson <scot.stevenson@gmail.com>
 // First version: 16. Sep 2016
-// This version: 28. Nov 2016
+// This version: 30. Nov 2016
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import (
 )
 
 // We keep line numbers associated with each line while we work on things for
-// the error codes and to be able to stor them as the last step
+// the error codes and to be able to store them as the last step
 type workline struct {
 	linenumber int
 	payload    string
@@ -78,11 +78,9 @@ func (a byLine) Less(i, j int) bool { return a[i].linenumber < a[j].linenumber }
 // convertNumber takes a string that is the opcode of an typist assembler
 // instruction and returns a string converted for its traditional counterpart.
 func convertNumber(s string) string {
-	s = strings.TrimSpace(s)
 
-	// Remove delimiters
-	s = strings.Replace(s, ":", "", -1)
-	s = strings.Replace(s, ".", "", -1)
+	s = strings.TrimSpace(s)
+	s = removeSeparators(s)
 
 	if strings.HasPrefix(s, "%") {
 		return s
@@ -160,7 +158,7 @@ func isOpcode(s string) bool {
 	return ok
 }
 
-// mergeLabel takes to strings, the first a complete line with the original
+// mergeLabel takes two strings, the first a complete line with the original
 // label, the second the new label. It returns a string of the same length as
 // the original where the new label replaces the old one
 // TODO write test routine
@@ -178,7 +176,7 @@ func mergeLabel(line, newlabel string) string {
 
 // removeSeparators takes a string representation of a hex number and returns a
 // string version with all legal separators removed. If there are no separators
-// in the string, the original version is returned
+// in the string, the original string is returned
 func removeSeparators(s string) string {
 	r := strings.NewReplacer(":", "", ".", "")
 	return r.Replace(s)
@@ -205,19 +203,22 @@ func procLine(jobs <-chan workline, results chan<- workline) {
 
 		label := ""
 
+		// TODO figure out a cleaner way of handling the colon addition,
+		// this currently happens in three different places
 		if hasLabel(j.payload) {
 
 			// Assumes we have already checked for empty lines
 			labelline := strings.Fields(j.payload)
 			label = labelline[0]
 
-			if *labelColon {
-				label = label + ":"
-			}
-
 			// If there is only the label in the line, we can deal
 			// with it immediately
 			if len(labelline) == 1 {
+
+				if *labelColon {
+					label = label + ":"
+				}
+
 				results <- workline{j.linenumber, label}
 				continue
 			}
@@ -227,6 +228,11 @@ func procLine(jobs <-chan workline, results chan<- workline) {
 			// TODO make sure there is enough whitespace left in the
 			// cases where the label gets a colon added
 			if isComment(labelline[1]) {
+
+				if *labelColon {
+					label = label + ":"
+				}
+
 				results <- workline{j.linenumber, mergeLabel(j.payload, label)}
 				continue
 			}
@@ -239,7 +245,9 @@ func procLine(jobs <-chan workline, results chan<- workline) {
 
 		}
 
-		// Main switch statement returns a processed new payload
+		// Main switch statement returns a processed new payload. We've
+		// already taken care of cases with only a comment or a
+		// comment with a label
 		newpl := ""
 		cleanpl := strings.TrimSpace(j.payload)
 		splitpl := strings.Fields(cleanpl)
@@ -248,30 +256,39 @@ func procLine(jobs <-chan workline, results chan<- workline) {
 		switch {
 
 		// At the moment, we do not translate directives but just pass them on
+		// because there are so frickin' many variations out there
+		// TODO convert .origin and .byte, .word etc payloads
 		case isDirective(testpl):
-			newpl = j.payload
-
-		case isComment(testpl):
 			newpl = j.payload
 
 		case isOpcode(testpl):
 			oldmnem := Opcodes.Table[testpl].OldMnem
+			comment := ""
+
+			// TODO We include size data in the opcode list to be
+			// able to validate the size of the operand, which is
+			// important for tradition formats. This function is not
+			// currently implemented
 			// size := Opcodes.Table[testpl].Size
 
 			if *upperOpcs {
 				oldmnem = firstToUpper(oldmnem)
 			}
 
-			// Convert and insert operand
+			// Convert and insert operand.
+			// TODO validate size of operad
 			if strings.Contains(oldmnem, "?") {
-				// TODO convert numbers
-				oldmnem = strings.Replace(oldmnem, "?", splitpl[1], -1)
+				newop := convertNumber(splitpl[1])
+				oldmnem = strings.Replace(oldmnem, "?", newop, -1)
 			}
 
-			// Reassemble with whitespace and in-line comments
-			// TODO add rest of split line, including inline
-			// comments
-			newpl = opcodeindent + oldmnem
+			// See if we have a comment after the instruction
+			// TODO pretty format this
+			if strings.Contains(cleanpl, ";") {
+				comment = " ; " + strings.SplitN(cleanpl, ";", 2)[1]
+			}
+
+			newpl = opcodeindent + oldmnem + comment
 
 		// Everything else is considered an error
 		default:
@@ -280,8 +297,12 @@ func procLine(jobs <-chan workline, results chan<- workline) {
 		}
 
 		// Add any label back to line
-		// TODO add fancy formatting
 		if label != "" {
+
+			if *labelColon {
+				label = label + ":"
+			}
+
 			labelindent := strings.Repeat(" ", len(opcodeindent)-len(label))
 			newpl = label + labelindent + strings.TrimSpace(newpl)
 		}

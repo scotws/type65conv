@@ -1,16 +1,17 @@
 ; Test code for typ65conv
 ; Scot W. Stevenson <scot.stevenson@gmail.com>
 ; First version: 16. Sep 2016
-; This version: 16. Sep 2016
+; This version: 28. Nov 2016
 
+        ; this is an indented comment that should remain
         .origin 00:8000
         .mpu 65816
 
 start           
                 ldx.# 00
-                txa
+                txa         ; label on line with opcode, no operand
                 adc.l 10:0000
-loop            sta.x 1000  ; label on line with opcode
+loop            sta.x 1000  ; label on line with opcode and operand
                 dex
                 bne loop
 
