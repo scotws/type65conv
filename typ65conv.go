@@ -110,16 +110,6 @@ func convertNumber(s string) string {
 	return s
 }
 
-// firstToUpper takes a string and converts the first word to uppercase,
-// returning the rest of the string otherwise unchanged. Splits at the first
-// space character. Used to convert both directives and opcodes to upper case.
-// Assumes that s is neither empty nor whitespace only
-func firstToUpper(s string) string {
-	wt := strings.TrimSpace(s) // otherwise whitespace will confuse strings.SplitN
-	ws := strings.SplitN(wt, " ", 2)
-	return strings.Replace(s, ws[0], strings.ToUpper(ws[0]), 1)
-}
-
 // hasLabel takes a string. If the string does not start with whitespace it is
 // assumed to be a label and the bool true is returned, otherwise false. The
 // function works regardless if there is anything else on the line since we only
@@ -272,7 +262,7 @@ func procLine(jobs <-chan workline, results chan<- workline) {
 			// size := Opcodes.Table[testpl].Size
 
 			if *upperOpcs {
-				oldmnem = firstToUpper(oldmnem)
+				oldmnem = strings.ToUpper(oldmnem)
 			}
 
 			// Convert and insert operand.
