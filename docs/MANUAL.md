@@ -25,8 +25,11 @@ with `go run`.
 ### Flags
 
 **-i**  - Input file name (REQUIRED)
+
 **-o**  - Output file name (default "typ65conv.asm")
+
 **-lc** - Add colons to all labels (default don't). `label` -> `label:`
+
 **-ou** - Make mnemonics uppercase (default lowercase). `nop` -> `NOP`
 
 
