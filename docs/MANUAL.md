@@ -78,3 +78,9 @@ the future.
 Typ65conv makes use of Go's concurrency support to convert one line per logical
 CPU core at a time. Note that for very small programs, this might actually make
 the conversion process slower because of the overhead of creating goroutines.
+
+
+### Further Information
+
+There is a discussion thread for typ65conv at
+[6502.org](http://forum.6502.org/viewtopic.php?f=2&t=4322).
