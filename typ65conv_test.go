@@ -1,7 +1,7 @@
 // Test file for typ65conv.go
 // Scot W. Stevenson <scot.stevenson@gmail.com>
 // First version 16. Sep 2016
-// This version 28. Nov 2016
+// This version 26. Sep 2017
 
 package main
 
@@ -33,29 +33,6 @@ func TestConvertNumber(t *testing.T) {
 	for _, test := range tests {
 		if got := convertNumber(test.input); got != test.want {
 			t.Errorf("convertNumber(%q) = %v", test.input, got)
-		}
-	}
-}
-
-// Test for empty and whitespace strings removed as we have already removed
-// these cases in the main program
-func TestFirstToUpper(t *testing.T) {
-	var tests = []struct {
-		input string
-		want  string
-	}{
-		// {"", ""},
-		// {" ", " "},
-		{".end", ".END"},
-		{"mr Robot", "MR Robot"},
-		{"    .end", "    .END"},
-		{"1234", "1234"},
-		{"one fish two fish", "ONE fish two fish"},
-	}
-
-	for _, test := range tests {
-		if got := firstToUpper(test.input); got != test.want {
-			t.Errorf("firstToUpper(%q) = %v", test.input, got)
 		}
 	}
 }

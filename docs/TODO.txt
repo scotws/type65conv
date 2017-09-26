@@ -1,6 +1,6 @@
 TODO list for typ65conv
 First version: 30. Nov 2016
-This version: 01. Dec 2016
+This version: 24. Dec 2016
 
 - Rewrite horribly messy main loop code
 - Add -lu parameter to convert labels to upper case
@@ -9,4 +9,5 @@ This version: 01. Dec 2016
 - Add validation of operand sizes for decimal numbers
 - Make output format pretty
 - Convert parameters of some simple directives such as .origin
+- Convert all directives to the Ophis format 
 - Convert .byte, .word etc numbers
